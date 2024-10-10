@@ -9,21 +9,21 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"golang.org/x/exp/slog"
-	_ "icu/cmd/app/docs"
-	"icu/internal/config"
-	"icu/internal/domain/users/handler"
-	"icu/internal/domain/users/repository"
-	"icu/internal/domain/users/service"
-	"icu/internal/middleware"
-	"icu/pkg/jwt_auth"
-	"icu/pkg/lib/logger/sl"
+	//_ "icu/cmd/app/docs"
+	"bem/internal/config"
+	"bem/internal/domain/users/handler"
+	"bem/internal/domain/users/repository"
+	"bem/internal/domain/users/service"
+	"bem/internal/middleware"
+	"bem/pkg/jwt_auth"
+	"bem/pkg/lib/logger/sl"
 	"log"
 	"net/http"
 )
 
 // @title TODO App API
 // @version 0.1
-// @description VMS server API
+// @description BEM server API
 // @host localhost:8080
 // @BasePath /
 func main() {

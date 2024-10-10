@@ -1,13 +1,13 @@
 package handler
 
 import (
+	"bem/internal/domain/users/models"
+	"bem/internal/domain/users/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/swaggo/http-swagger/example/go-chi/docs"
 	_ "github.com/swaggo/swag/example/celler/httputil"
 	"golang.org/x/exp/slog"
-	"icu/internal/domain/users/models"
-	"icu/internal/domain/users/service"
 	"net/http"
 )
 

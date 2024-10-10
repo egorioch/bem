@@ -1,15 +1,15 @@
 package service
 
 import (
+	"bem/internal/config"
+	"bem/internal/domain/users/models"
+	"bem/internal/domain/users/repository"
+	"bem/pkg/jwt_auth"
 	"context"
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/exp/slog"
-	"icu/internal/config"
-	"icu/internal/domain/users/models"
-	"icu/internal/domain/users/repository"
-	"icu/pkg/jwt_auth"
 	"time"
 )
 
@@ -50,13 +50,20 @@ func (us *UserService) CreateUser(ctx context.Context, user *models.User) error 
 	if user.Username == "" {
 		return errors.New("username isn't defined")
 	}
+	if len(user.Username) < 8 {
+		return errors.New("must be at least 8 characters")
+	}
 	if user.Password == "" {
 		return errors.New("password isn't defined")
+	}
+	if len(user.Password) < 8 {
+		return errors.New("must be at least 8 characters")
 	}
 	if user.Email == "" {
 		return errors.New("email isn't defined")
 	}
 
+	fmt.Printf("new user: %+v", user)
 	if user.AdminToken == us.config.AccessPermission.AdminToken {
 		user.Role = "admin"
 	} else {
@@ -71,7 +78,6 @@ func (us *UserService) CreateUser(ctx context.Context, user *models.User) error 
 	return nil
 }
 
-// Authenticate TODO change err format
 func (us *UserService) Authenticate(ctx context.Context, email, password string) (user *models.User, accessToken string, refreshToken string, err error) {
 	user, err = us.userRepo.FindOne(ctx, email)
 	if err != nil || user == nil {

@@ -1,12 +1,12 @@
 package repository
 
 import (
+	"bem/internal/domain/users/models"
 	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 	"golang.org/x/exp/slog"
-	"icu/internal/domain/users/models"
 )
 
 type UserRepository struct {

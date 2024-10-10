@@ -1,6 +1,6 @@
 <template>
-  <div class="col-md-12">
-    <div class="card card-container">
+  <div class="reg-container">
+    <div class="card-container">
       <img
         id="profile-img"
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
@@ -8,7 +8,7 @@
         width="300px"
         height="300px"
       />
-      <Form @submit="handleRegister" :validation-schema="schema">
+      <Form @submit="handleRegister" :validation-schema="schema" class="form">
         <div v-if="!successful">
           <div class="form-group">
             <label for="username">Username</label>
@@ -24,6 +24,11 @@
             <label for="password">Password</label>
             <Field name="password" type="password" class="form-control" />
             <ErrorMessage name="password" class="error-feedback" />
+          </div>
+          <div class="form-group">
+            <label for="admin_token">Token</label>
+            <Field name="admin_token" type="text" class="form-control" />
+            <ErrorMessage name="admin_token" class="error-feedback" />
           </div>
 
           <div class="form-group">
@@ -88,7 +93,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      return this.$store.getters["auth/loggedIn"] ? this.$store.getters["auth/loggedIn"] : false;
     },
   },
   mounted() {
@@ -124,5 +129,26 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+.reg-container {
+  width: 720px;
+  z-index: 1;
+  // height: 500px;
+}
+.card-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-img-card {
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+}
 </style>

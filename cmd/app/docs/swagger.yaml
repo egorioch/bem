@@ -1,9 +1,0 @@
-basePath: /
-host: localhost:8080
-info:
-  contact: {}
-  description: VMS server API
-  title: TODO App API
-  version: "0.1"
-paths: {}
-swagger: "2.0"

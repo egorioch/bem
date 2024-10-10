@@ -1,12 +1,12 @@
 package middleware
 
 import (
+	"bem/internal/domain/users/models"
+	"bem/internal/domain/users/service"
 	"context"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"icu/internal/domain/users/models"
-	"icu/internal/domain/users/service"
 	"net/http"
 )
 

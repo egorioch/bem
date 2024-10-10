@@ -1,4 +1,4 @@
-module icu
+module bem
 
 go 1.22.3
 

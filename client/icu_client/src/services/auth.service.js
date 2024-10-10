@@ -3,52 +3,6 @@ import axios from "axios";
 const API_URL = "http://localhost:8080/api/auth/";
 
 class AuthService {
-    // constructor() {
-    //     this.setupInterceptors();
-    // }
-
-    // ловится баг по error.response.status
-    // setupInterceptors = () => {
-    //     if (localStorage.getItem('user')) {
-    //         axios.interceptors.request.use(
-    //             async (config) => {
-    //                 const token = store.getters['auth/accessToken'];
-    //                 if (token) {
-    //                     config.headers['Authorization'] = 'Bearer ' + token;
-    //                 }
-    //                 return config;
-    //             },
-    //             (error) => {
-    //                 return Promise.reject(error);
-    //             }
-    //         );
-
-    //         axios.interceptors.response.use(
-    //             (response) => response,
-    //             async (error) => {
-    //                 console.log("error config: " + JSON.stringify(error))
-    //                 const originalRequest = error.config;
-    //                 if (error.response.status === 401 && !originalRequest._retry) {
-    //                     originalRequest._retry = true;
-    //                     try {
-    //                         const newAccessToken = await store.dispatch('auth/refreshToken');
-    //                         axios.defaults.headers.common['Authorization'] = 'Bearer ' + newAccessToken;
-    //                         originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
-    //                         return axios(originalRequest);
-    //                     } catch (e) {
-    //                         store.dispatch('auth/logout');
-    //                         this.$router.push('/login');
-    //                         return Promise.reject(e);
-    //                     }
-    //                 }
-    //                 return Promise.reject(error);
-    //             }
-    //         );
-    //     } else {
-    //         return Promise.resolve()
-    //     }
-    // };
-
     login(user) {
         let token
         return axios
@@ -74,10 +28,12 @@ class AuthService {
     }
 
     register(user) {
+        console.log("user fields: " + JSON.stringify(user))
         return axios.post(API_URL + "sign_up", {
             email: user.email,
             username: user.username,
-            password: user.password
+            password: user.password,
+            admin_token: user.admin_token
         });
     }
 

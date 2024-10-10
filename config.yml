@@ -13,11 +13,12 @@ storage:
 
 env: "local"
 
-admin_token: qwert1
+access_permission:
+  admin_token: qwert1
 
 log:
   level: info
-  file: "./logs/all.log"
+  file: "static/logs/all.log"
   format: json
 
 jwt:
