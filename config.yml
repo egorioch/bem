@@ -1,0 +1,25 @@
+---
+
+is_debug: true
+listen:
+  type: port
+  port: 1234
+storage:
+  host: localhost
+  port: 5432
+  database: icu
+  username: icuser
+  password: 3003
+
+env: "local"
+
+admin_token: qwert1
+
+log:
+  level: info
+  file: "./logs/all.log"
+  format: json
+
+jwt:
+  access_token_expiry: 15m
+  refresh_token_expiry: 24h
