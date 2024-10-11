@@ -7,8 +7,8 @@ listen:
 storage:
   host: localhost
   port: 5432
-  database: icu
-  username: icuser
+  database: bem
+  username: bem
   password: 3003
 
 env: "local"

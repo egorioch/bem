@@ -47,6 +47,10 @@ func main() {
 	}
 }
 
+func createDocsHandler(db *sql.DB, cfg *config.Config, logger *slog.Logger, r *gin.Engine) {
+
+}
+
 func createUserHandlers(db *sql.DB, cfg *config.Config, logger *slog.Logger, r *gin.Engine) error {
 	accessSecret, err := jwt_auth.GenerateRandomSecret()
 	refreshSecret, err := jwt_auth.GenerateRandomSecret()
