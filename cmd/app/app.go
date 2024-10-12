@@ -1,6 +1,9 @@
 package main
 
 import (
+	handler2 "bem/internal/domain/doc/handler"
+	repository2 "bem/internal/domain/doc/repository"
+	service2 "bem/internal/domain/doc/service"
 	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -37,6 +40,7 @@ func main() {
 
 	// Создание маршрутизации
 	err := createUserHandlers(db, cfg, logger, r)
+	createDocsHandler(db, logger, r)
 	c := createCors()
 	httpHandler := c.Handler(r)
 
@@ -47,8 +51,16 @@ func main() {
 	}
 }
 
-func createDocsHandler(db *sql.DB, cfg *config.Config, logger *slog.Logger, r *gin.Engine) {
+func createDocsHandler(db *sql.DB, logger *slog.Logger, r *gin.Engine) {
+	docRepo := repository2.NewDocumentRepository(db, logger)
+	cache := service2.NewCache()
+	docService := service2.CreateNewDocumentService(docRepo, logger, cache)
+	docHandler := handler2.NewDocumentHandler(docService, logger)
 
+	r.GET("/api/docs/:id", docHandler.GetDocumentHandlerByID)
+	r.GET("/api/docs/all", docHandler.GetAllDocuments)
+	r.GET("/api/docs/save", docHandler.SaveDocumentHandler)
+	r.DELETE("/api/docs/:id", docHandler.DeleteDocumentByIDHandler)
 }
 
 func createUserHandlers(db *sql.DB, cfg *config.Config, logger *slog.Logger, r *gin.Engine) error {

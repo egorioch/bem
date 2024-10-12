@@ -23,8 +23,9 @@ func NewDocumentHandler(ds *service.DocumentService, logger *slog.Logger) *Docum
 	}
 }
 
-func (dh *DocumentHandler) GetDocumentHandler(c *gin.Context) {
+func (dh *DocumentHandler) GetDocumentHandlerByID(c *gin.Context) {
 	documentID := c.Param("id") // Получаем ID документа из URL
+	fmt.Printf("id: %s \n", documentID)
 
 	doc, err := dh.documentService.GetDocument(c.Request.Context(), documentID)
 	if err != nil {
@@ -33,6 +34,28 @@ func (dh *DocumentHandler) GetDocumentHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, doc.MD)
+}
+func (dh *DocumentHandler) GetAllDocuments(c *gin.Context) {
+	docs, err := dh.documentService.GetAllDocuments(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "there are no documents"})
+		return
+	}
+
+	c.JSON(http.StatusOK, docs)
+}
+
+func (dh *DocumentHandler) DeleteDocumentByIDHandler(c *gin.Context) {
+	documentID := c.Param("id")
+	err := dh.documentService.DeleteDocumentByID(c.Request.Context(), documentID)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Document not found or could not be deleted"})
+		return
+	}
+
+	// Успешное удаление документа
+	c.JSON(http.StatusOK, gin.H{"message": "Document deleted successfully"})
 }
 
 func (dh *DocumentHandler) SaveDocumentHandler(c *gin.Context) {
