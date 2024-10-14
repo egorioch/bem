@@ -16,7 +16,6 @@ CREATE TABLE documents (
     public BOOLEAN NOT NULL DEFAULT false,
     location VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    token VARCHAR(255) NOT NULL,
     owner_email VARCHAR(255),
     FOREIGN KEY (owner_email) REFERENCES users(email)
 );

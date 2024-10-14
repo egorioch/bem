@@ -17,5 +17,4 @@ type MetaData struct {
 	Public    bool      `json:"public"`
 	CreatedAt time.Time `json:"created"`
 	Grant     []string  `json:"grant"`
-	Token     string    `json:"token"`
 }

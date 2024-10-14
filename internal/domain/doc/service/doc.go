@@ -28,8 +28,8 @@ func (ds *DocumentService) GetDocument(ctx context.Context, documentID string) (
 	return doc, err
 }
 
-func (ds *DocumentService) GetAllDocuments(ctx context.Context) (*[]models.Document, error) {
-	docs, err := ds.DocumentRepo.GetAllDocuments(ctx)
+func (ds *DocumentService) GetAllDocuments(ctx context.Context, email string) (*[]models.Document, error) {
+	docs, err := ds.DocumentRepo.GetAllDocuments(ctx, email)
 
 	return docs, err
 }
@@ -44,7 +44,13 @@ func (ds *DocumentService) DeleteDocumentByID(ctx context.Context, documentID st
 }
 
 func (ds *DocumentService) SaveDocument(ctx context.Context, doc *models.Document) error {
-	err := ds.SaveDocument(ctx, doc)
+	err := ds.DocumentRepo.SaveDocument(ctx, doc)
+
+	return err
+}
+
+func (ds *DocumentService) SaveDocumentGrants(ctx context.Context, docID string, grants []string) error {
+	err := ds.DocumentRepo.SaveDocumentGrants(ctx, docID, grants)
 
 	return err
 }

@@ -23,11 +23,11 @@ func NewDocumentRepository(db *sql.DB, logger *slog.Logger) *DocumentRepository 
 }
 
 func (r *DocumentRepository) GetDocument(ctx context.Context, documentID string) (*models.Document, error) {
-	query := `SELECT id, name, mime_type, file, public, location, created_at, token FROM documents WHERE id = $1`
+	query := `SELECT id, name, mime_type, file, public, location, created_at FROM documents WHERE id = $1`
 
 	var doc models.Document
 	err := r.db.QueryRowContext(ctx, query, documentID).Scan(
-		&doc.MD.ID, &doc.MD.Name, &doc.MD.MimeType, &doc.MD.File, &doc.MD.Public, &doc.Location, &doc.MD.CreatedAt, &doc.MD.Token)
+		&doc.MD.ID, &doc.MD.Name, &doc.MD.MimeType, &doc.MD.File, &doc.MD.Public, &doc.Location, &doc.MD.CreatedAt)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, fmt.Errorf("document not found")
@@ -39,24 +39,29 @@ func (r *DocumentRepository) GetDocument(ctx context.Context, documentID string)
 	return &doc, nil
 }
 
-func (r *DocumentRepository) GetAllDocuments(ctx context.Context) (*[]models.Document, error) {
-	query := `SELECT id, name, mime_type, file, public, location, created_at, token FROM documents`
-
-	var docs []models.Document
-	rows, err := r.db.QueryContext(ctx, query)
+func (r *DocumentRepository) GetAllDocuments(ctx context.Context, email string) (*[]models.Document, error) {
+	query := `
+		SELECT d.id, d.name, d.mime_type, d.file, d.public, d.location, d.created_at
+		FROM documents d
+		JOIN document_grants dg ON d.id = dg.document_id
+		WHERE dg.user_email = $1
+		ORDER BY d.created_at DESC;
+	`
+	rows, err := r.db.QueryContext(ctx, query, email)
 
 	if err != nil {
 		return nil, fmt.Errorf("error fetching documents: %w", err)
 	}
 
+	var docs []models.Document
 	for rows.Next() {
 		var doc models.Document
-		if err := rows.Scan(&doc.MD.ID, &doc.MD.Name, &doc.MD.MimeType,
-			&doc.MD.File, &doc.MD.Public, &doc.Location, &doc.MD.CreatedAt, &doc.MD.Token); err != nil {
+		if err := rows.Scan(&doc.MD.ID, &doc.MD.Name, &doc.MD.MimeType, &doc.MD.File, &doc.MD.Public, &doc.Location, &doc.MD.CreatedAt); err != nil {
 			return nil, fmt.Errorf("error scanning document: %w", err)
 		}
 		docs = append(docs, doc)
 	}
+
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, fmt.Errorf("document not found")
 	}
@@ -68,12 +73,23 @@ func (r *DocumentRepository) GetAllDocuments(ctx context.Context) (*[]models.Doc
 }
 
 func (dr *DocumentRepository) SaveDocument(ctx context.Context, doc *models.Document) error {
-	query := `INSERT INTO documents (name, mime_type, file, public, location, token, owner_email)
-              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+	query := `INSERT INTO documents (name, mime_type, file, public, location, owner_email)
+              VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
 	err := dr.db.QueryRowContext(ctx, query,
-		doc.MD.Name, doc.MD.MimeType, doc.MD.File, doc.MD.Public, doc.Location, doc.MD.Token, doc.MD.Grant).Scan(&doc.MD.ID)
+		doc.MD.Name, doc.MD.MimeType, doc.MD.File, doc.MD.Public, doc.Location, doc.MD.Grant).Scan(&doc.MD.ID)
 	if err != nil {
 		return fmt.Errorf("error saving document: %w", err)
+	}
+	return nil
+}
+
+func (r *DocumentRepository) SaveDocumentGrants(ctx context.Context, documentID string, users []string) error {
+	query := `INSERT INTO document_grants (document_id, user_email) VALUES ($1, $2)`
+	for _, userEmail := range users {
+		_, err := r.db.ExecContext(ctx, query, documentID, userEmail)
+		if err != nil {
+			return fmt.Errorf("error saving document grant: %w", err)
+		}
 	}
 	return nil
 }

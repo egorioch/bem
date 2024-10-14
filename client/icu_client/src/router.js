@@ -4,6 +4,7 @@ import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 import store from './store';
 import { jwtDecode } from "jwt-decode";
+import UploadDoc from "./components/UploadDoc.vue";
 // lazy-loaded
 const Profile = () => import("./components/Profile.vue")
 const BoardUser = () => import("./components/BoardUser.vue")
@@ -43,6 +44,12 @@ const routes = [
     // lazy-loaded
     component: BoardUser,
   },
+  {
+    path: "/save",
+    name: "save",
+    component: UploadDoc,
+    meta: { requiresAuth: true },
+  }
 ];
 
 const router = createRouter({

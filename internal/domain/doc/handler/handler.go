@@ -36,7 +36,7 @@ func (dh *DocumentHandler) GetDocumentHandlerByID(c *gin.Context) {
 	c.JSON(http.StatusOK, doc.MD)
 }
 func (dh *DocumentHandler) GetAllDocuments(c *gin.Context) {
-	docs, err := dh.documentService.GetAllDocuments(c.Request.Context())
+	docs, err := dh.documentService.GetAllDocuments(c.Request.Context(), c.Param("user"))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "there are no documents"})
 		return
@@ -71,6 +71,7 @@ func (dh *DocumentHandler) SaveDocumentHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid meta data"})
 		return
 	}
+	doc.MD.File = true
 
 	file, _, err := c.Request.FormFile("file")
 	if err != nil {
@@ -94,6 +95,13 @@ func (dh *DocumentHandler) SaveDocumentHandler(c *gin.Context) {
 
 	if err = dh.documentService.SaveDocument(c.Request.Context(), &doc); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "File save error"})
+		return
+	}
+
+	// Сохранение прав доступа
+	err = dh.documentService.SaveDocumentGrants(c.Request.Context(), doc.MD.ID, doc.MD.Grant)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving document grants"})
 		return
 	}
 

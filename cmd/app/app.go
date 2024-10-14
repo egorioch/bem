@@ -59,7 +59,7 @@ func createDocsHandler(db *sql.DB, logger *slog.Logger, r *gin.Engine) {
 
 	r.GET("/api/docs/:id", docHandler.GetDocumentHandlerByID)
 	r.GET("/api/docs/all", docHandler.GetAllDocuments)
-	r.GET("/api/docs/save", docHandler.SaveDocumentHandler)
+	r.POST("/api/docs/save", docHandler.SaveDocumentHandler)
 	r.DELETE("/api/docs/:id", docHandler.DeleteDocumentByIDHandler)
 }
 
